@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import logging 
+from exchanges.binance import BinanceClient
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -20,3 +21,5 @@ logger.addHandler(file_handler)
 
 if __name__ == "__main__":
     mode = input("Choose the program mode (data / backtest / optimize)").lower()
+
+    client = BinanceClient(True)
