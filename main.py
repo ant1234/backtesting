@@ -23,3 +23,4 @@ if __name__ == "__main__":
     mode = input("Choose the program mode (data / backtest / optimize)").lower()
 
     client = BinanceClient(True)
+    print(client.get_historical_data("BTCUSDT"))
