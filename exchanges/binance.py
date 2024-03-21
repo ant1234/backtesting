@@ -41,8 +41,6 @@ class BinanceClient:
 
         symbols = [x["symbol"] for x in data["symbols"]]
 
-        print(symbols)
-
         return symbols
     
     def get_historical_data(self, 
