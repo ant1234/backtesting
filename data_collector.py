@@ -1,11 +1,15 @@
 from typing import *
 import time
+from database import Hdf5Client
 import logging
 from exchanges.binance import BinanceClient
 from utils import *
 logger = logging.getLogger()
 
 def collect_all(client: BinanceClient, exchange: str, symbol: str):
+
+    h5_db = Hdf5Client(exchange)
+    h5_db.create_dataset(symbol)
 
     oldest_ts, most_recent_ts = None, None
 
