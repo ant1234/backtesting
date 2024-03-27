@@ -11,7 +11,8 @@ def collect_all(client: BinanceClient, exchange: str, symbol: str):
     h5_db = Hdf5Client(exchange)
     h5_db.create_dataset(symbol)
 
-    oldest_ts, most_recent_ts = None, None
+    oldest_ts, most_recent_ts = h5_db.get_first_last_timestamp(symbol)
+    print(oldest_ts, most_recent_ts)
 
     # initial data
     if oldest_ts is None:
@@ -33,6 +34,7 @@ def collect_all(client: BinanceClient, exchange: str, symbol: str):
         most_recent_ts = data[-1][0]
         
         #insert the data
+        h5_db.write_data(symbol, data)
 
     # most recent data
     while True:
@@ -57,6 +59,8 @@ def collect_all(client: BinanceClient, exchange: str, symbol: str):
                         len(data),
                         ms_to_dt(data[0][0]),
                         ms_to_dt(data[-1][0]))
+        
+        h5_db.write_data(symbol, data)
             
         time.sleep(1.1) # pause to overcome the rate limit
 
@@ -83,6 +87,8 @@ def collect_all(client: BinanceClient, exchange: str, symbol: str):
                         len(data),
                         ms_to_dt(data[0][0]),
                         ms_to_dt(data[-1][0]))
+        
+        h5_db.write_data(symbol, data)
             
         time.sleep(1.1) # pause to overcome the rate limit
 
