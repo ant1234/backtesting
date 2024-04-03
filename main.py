@@ -46,19 +46,19 @@ if __name__ == "__main__":
         available_strategies = ["obv"]
 
         while True:
-            strategy = input(f"choose a strategy: ({', '.join(available_strategies)})").lower()
+            strategy = input(f"choose a strategy ({', '.join(available_strategies)}): ").lower()
             if strategy in available_strategies:
                 break
 
         # from 
 
         while True:
-            tf = input(f"choose a timeframe: ({', '.join(TF_EQUIV.keys())})").lower()
+            tf = input(f"choose a timeframe ({', '.join(TF_EQUIV.keys())}): ").lower()
             if tf in TF_EQUIV.keys():
                 break
 
         while True:
-            from_time = input("backtest from (yyyy-mm-dd or press enter to use all data)").lower()
+            from_time = input("backtest from (yyyy-mm-dd or press enter to use all data): ").lower()
             if from_time == "":
                 from_time = 0
                 break
@@ -70,7 +70,7 @@ if __name__ == "__main__":
                 continue
 
         while True:
-            to_time = input("backtest to (yyyy-mm-dd or press enter to use current time)").lower()
+            to_time = input("backtest to (yyyy-mm-dd or press enter to use current time): ").lower()
             if to_time == "":
                 to_time = int(datetime.datetime.now().timestamp() * 1000)
                 break
