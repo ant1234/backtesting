@@ -20,7 +20,7 @@ STRAT_PARAMS = {
     },
     "sup_res": {
         "min_points": {"name": "minimum points", "type": int},
-        "main_diff_points": {"name": "min difference between points", "type": int},
+        "min_diff_points": {"name": "min difference between points", "type": int},
         "rounding_nb": {"name": "rounding number", "type": float},
         "take_profit": {"name": "take profit %", "type": float},
         "stop_loss": {"name": "stop loss %", "type": float},
