@@ -24,28 +24,28 @@ def run(exchange: str, symbol: str, strategy: str, tf: str, from_time: int, to_t
         data = h5_db.get_data(symbol, from_time, to_time)
         data = resample_timeframe(data, tf)
 
-        pnl = strategies.obv.backtest(data, ma_period=params["ma_period"])
+        pnl, max_drawdown = strategies.obv.backtest(data, ma_period=params["ma_period"])
 
-        return pnl
+        return pnl, max_drawdown
 
     elif strategy == "ichimoku":
         h5_db = Hdf5Client(exchange)
         data = h5_db.get_data(symbol, from_time, to_time)
         data = resample_timeframe(data, tf)
 
-        pnl = strategies.ichimoku.backtest(data, tenkan_period=params["tenkan"], kijun_period=params["kijun"])
+        pnl, max_drawdown = strategies.ichimoku.backtest(data, tenkan_period=params["tenkan"], kijun_period=params["kijun"])
 
-        return pnl
+        return pnl, max_drawdown
 
     elif strategy == "sup_res":
         h5_db = Hdf5Client(exchange)
         data = h5_db.get_data(symbol, from_time, to_time)
         data = resample_timeframe(data, tf)
 
-        pnl = strategies.support_resistance.backtest(data, 
+        pnl, max_drawdown = strategies.support_resistance.backtest(data, 
                                                      min_points=params["min_points"], 
                                                      min_diff_points=params["min_diff_points"], 
                                                      rounding_nb=params["rounding_nb"], 
                                                      take_profit=params["take_profit"], 
                                                      stop_loss=params["stop_loss"])
-        return pnl
+        return pnl, max_drawdown

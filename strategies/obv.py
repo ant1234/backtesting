@@ -23,4 +23,9 @@ def backtest(df: pd.DataFrame, ma_period: int):
     # pct_change percent difference between each row, shift the row by one
     df["pnl"] = df["close"].pct_change() * df["signal"].shift(1)
 
-    return df["pnl"].sum()
+    # cumulative drawdown over time 
+    df["cum_pnl"] = df["pnl"].cumsum()
+    df["max_cum_pnl"] = df["cum_pnl"].cummax()
+    df["drawdown"] = df["max_cum_pnl"] - df["cum_pnl"]
+
+    return df["pnl"].sum(), df["drawdown"].max()
