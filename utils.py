@@ -10,6 +10,23 @@ TF_EQUIV = {"1m": "1Min",
             "12h": "12H",
             "1d": "D"}
 
+STRAT_PARAMS = {
+    "obv": {
+        "ma_period": {"name": "moving average period", "type": int},
+    },
+    "ichimoku": {
+        "kijun": {"name": "kijun period", "type": int},
+        "tenkan": {"name": "tenkan period", "type": int},
+    },
+    "sup_res": {
+        "min_points": {"name": "minimum points", "type": int},
+        "main_diff_points": {"name": "min difference between points", "type": int},
+        "rounding_nb": {"name": "rounding number", "type": float},
+        "take_profit": {"name": "take profit %", "type": float},
+        "stop_loss": {"name": "stop loss %", "type": float},
+    },
+}
+
 #milliseconds to date time.
 def ms_to_dt(ms: int):
     return datetime.datetime.utcfromtimestamp(ms / 1000)
