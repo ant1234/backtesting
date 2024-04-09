@@ -9,7 +9,7 @@ find_package(HDF5 REQUIRED COMPONENTS C)
 
 include_directories(${HDF5_INCLUDE_DIRS})
 
-set(SOURCE_FILES main.cpp)
+set(SOURCE_FILES main.cpp Database.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 

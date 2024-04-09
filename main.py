@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
         while True:
             from_time = input("backtest from (yyyy-mm-dd or press enter to use all data): ").lower()
-            if from_time == "":
+            if from_time == "backtesting_cpp/":
                 from_time = 0
                 break
 
