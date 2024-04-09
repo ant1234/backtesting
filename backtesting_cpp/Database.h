@@ -4,8 +4,12 @@
 class Database 
 {
     public:
+
         Database(const std::string& file_name);
         void close_file();
+        double** get_data(const std::string& symbol, const std::string& exchange);
 
         hid_t h5_file;
 };
+
+int compare(const void* pa, const void* pb);
