@@ -7,7 +7,7 @@ class Database
 
         Database(const std::string& file_name);
         void close_file();
-        double** get_data(const std::string& symbol, const std::string& exchange);
+        double** get_data(const std::string& symbol, const std::string& exchange, int& array_size);
 
         hid_t h5_file;
 };

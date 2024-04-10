@@ -25,7 +25,7 @@ void Database::close_file()
     H5Fclose(h5_file);
 }
 
-double** Database::get_data(const string& symbol, const string& exchange) 
+double** Database::get_data(const string& symbol, const string& exchange, int& array_size) 
 {
     double** results = {};
 
@@ -41,6 +41,8 @@ double** Database::get_data(const string& symbol, const string& exchange)
     hsize_t dims[2];
 
     H5Sget_simple_extent_dims(dspace, dims, NULL);
+
+    array_size = (int)dims[0];
 
     results = new double*[dims[0]];
 
