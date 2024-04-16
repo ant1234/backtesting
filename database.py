@@ -1,11 +1,14 @@
-import h5py
 from typing import *
-import numpy as np
-import pandas as pd
 import logging
 import time
 
+import h5py
+import numpy as np
+import pandas as pd
+
+
 logger = logging.getLogger()
+
 
 class Hdf5Client:
     def __init__(self, exchange: str):
@@ -34,7 +37,7 @@ class Hdf5Client:
                 filtered_data.append(d)
 
         if len(filtered_data) == 0:
-            logger.warning("%s: no data to insert", symbol)
+            logger.warning("%s: No data to insert", symbol)
             return
 
         data_array = np.array(filtered_data)
@@ -43,7 +46,7 @@ class Hdf5Client:
         self.hf[symbol][-data_array.shape[0]:] = data_array
 
         self.hf.flush()
-    
+
     def get_data(self, symbol: str, from_time: int, to_time: int) -> Union[None, pd.DataFrame]:
 
         start_query = time.time()
@@ -51,8 +54,8 @@ class Hdf5Client:
         existing_data = self.hf[symbol][:]
 
         if len(existing_data) == 0:
-            return 0
-        
+            return None
+
         data = sorted(existing_data, key=lambda x: x[0])
         data = np.array(data)
 
@@ -64,19 +67,23 @@ class Hdf5Client:
 
         query_time = round((time.time() - start_query), 2)
 
-        logger.info("retrived %s %s data from database in %s seconds ", len(df.index), symbol, query_time)
+        logger.info("Retrieved %s %s data from database in %s seconds", len(df.index), symbol, query_time)
 
         return df
 
-    def get_first_last_timestamp(self, symbol:str) -> Union[Tuple[None, None], Tuple[float, float]]:
+    def get_first_last_timestamp(self, symbol: str) -> Union[Tuple[None, None], Tuple[float, float]]:
 
         existing_data = self.hf[symbol][:]
 
         if len(existing_data) == 0:
             return None, None
-        
+
         first_ts = min(existing_data, key=lambda x: x[0])[0]
         last_ts = max(existing_data, key=lambda x: x[0])[0]
 
         return first_ts, last_ts
+
+
+
+
 

@@ -1,10 +1,15 @@
-from typing import *
-import time
-from database import Hdf5Client
+import typing
 import logging
-from exchanges.binance import BinanceClient
+
+import time
+
+from database import Hdf5Client
 from utils import *
+from exchanges.binance import BinanceClient
+
+
 logger = logging.getLogger()
+
 
 def collect_all(client: BinanceClient, exchange: str, symbol: str):
 
@@ -13,43 +18,39 @@ def collect_all(client: BinanceClient, exchange: str, symbol: str):
 
     oldest_ts, most_recent_ts = h5_db.get_first_last_timestamp(symbol)
 
-    # initial data
-    if oldest_ts is None:
+    # Initial Request
 
-        data = client.get_historical_data(symbol, end_time=time.time() * 1000 - 60000)
+    if oldest_ts is None:
+        data = client.get_historical_data(symbol, end_time=int(time.time() * 1000) - 60000)
 
         if len(data) == 0:
             logger.warning("%s %s: no initial data found", exchange, symbol)
             return
         else:
-            logger.info("%s %s: collected %s initial data from %s to %s ", 
-                        exchange, 
-                        symbol, 
-                        len(data),
-                        ms_to_dt(data[0][0]),
-                        ms_to_dt(data[-1][0]))
-            
+            logger.info("%s %s: Collected %s initial data from %s to %s", exchange, symbol, len(data),
+                        ms_to_dt(data[0][0]), ms_to_dt(data[-1][0]))
+
         oldest_ts = data[0][0]
         most_recent_ts = data[-1][0]
-        
-        #insert the data
+
         h5_db.write_data(symbol, data)
 
     data_to_insert = []
 
-    # most recent data
+    # Most recent data
+
     while True:
 
         data = client.get_historical_data(symbol, start_time=int(most_recent_ts + 60000))
 
         if data is None:
-            time.sleep(4) # pause incase an error occurs during the request
+            time.sleep(4)  # Pause in case an error occurs during the request
             continue
 
         if len(data) < 2:
             break
 
-        data = data[:-1] 
+        data = data[:-1]
 
         data_to_insert = data_to_insert + data
 
@@ -59,31 +60,28 @@ def collect_all(client: BinanceClient, exchange: str, symbol: str):
 
         if data[-1][0] > most_recent_ts:
             most_recent_ts = data[-1][0]
-            
-        logger.info("%s %s: collected %s recent data from %s to %s ", 
-                        exchange, 
-                        symbol, 
-                        len(data),
-                        ms_to_dt(data[0][0]),
-                        ms_to_dt(data[-1][0]))
-                    
-        time.sleep(1.1) # pause to overcome the rate limit
+
+        logger.info("%s %s: Collected %s recent data from %s to %s", exchange, symbol, len(data),
+                    ms_to_dt(data[0][0]), ms_to_dt(data[-1][0]))
+
+        time.sleep(1.1)
 
     h5_db.write_data(symbol, data_to_insert)
     data_to_insert.clear()
 
-    # older data
+    # Older data
+
     while True:
 
         data = client.get_historical_data(symbol, end_time=int(oldest_ts - 60000))
 
         if data is None:
-            time.sleep(4) # pause incase an error occurs during the request
+            time.sleep(4)  # Pause in case an error occurs during the request
             continue
 
         if len(data) == 0:
-            logger.info("%s %s: stopped older data collection because no data was found before %s", 
-                        exchange, symbol, ms_to_dt(oldest_ts))
+            logger.info("%s %s: Stopped older data collection because no data was found before %s", exchange, symbol,
+                        ms_to_dt(oldest_ts))
             break
 
         data_to_insert = data_to_insert + data
@@ -94,15 +92,12 @@ def collect_all(client: BinanceClient, exchange: str, symbol: str):
 
         if data[0][0] < oldest_ts:
             oldest_ts = data[0][0]
-            
-        logger.info("%s %s: collected %s older data from %s to %s ", 
-                        exchange, 
-                        symbol, 
-                        len(data),
-                        ms_to_dt(data[0][0]),
-                        ms_to_dt(data[-1][0]))
-            
-        time.sleep(1.1) # pause to overcome the rate limit
-    
+
+        logger.info("%s %s: Collected %s older data from %s to %s", exchange, symbol, len(data),
+                    ms_to_dt(data[0][0]), ms_to_dt(data[-1][0]))
+
+        time.sleep(1.1)
+
     h5_db.write_data(symbol, data_to_insert)
+
 

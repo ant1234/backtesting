@@ -1,6 +1,8 @@
-import requests
 from typing import *
 import logging
+
+import requests
+
 
 logger = logging.getLogger()
 
@@ -16,22 +18,22 @@ class BinanceClient:
             self._base_url = "https://api.binance.com"
 
         self.symbols = self._get_symbols()
-    
+
     def _make_request(self, endpoint: str, query_parameters: Dict):
 
         try:
             response = requests.get(self._base_url + endpoint, params=query_parameters)
         except Exception as e:
-            logger.error("Conection error while making request to %s: %s", endpoint, e)
+            logger.error("Connection error while making request to %s: %s", endpoint, e)
             return None
-        
+
         if response.status_code == 200:
             return response.json()
         else:
-            logger.error("Error while making request to %s: %s (status code = %s)", 
+            logger.error("Error while making request to %s: %s (status code = %s)",
                          endpoint, response.json(), response.status_code)
             return None
-        
+
     def _get_symbols(self) -> List[str]:
 
         params = dict()
@@ -42,12 +44,9 @@ class BinanceClient:
         symbols = [x["symbol"] for x in data["symbols"]]
 
         return symbols
-    
-    def get_historical_data(self, 
-                            symbol: str, 
-                            start_time: Optional[int] = None, 
-                            end_time: Optional[int] = None):
-        
+
+    def get_historical_data(self, symbol: str, start_time: Optional[int] = None, end_time: Optional[int] = None):
+
         params = dict()
 
         params["symbol"] = symbol
@@ -66,19 +65,14 @@ class BinanceClient:
 
         if raw_candles is not None:
             for c in raw_candles:
-                candles.append((float(c[0]), 
-                                float(c[1]), 
-                                float(c[2]), 
-                                float(c[3]), 
-                                float(c[4]), 
-                                float(c[5])))
-                
+                candles.append((float(c[0]), float(c[1]), float(c[2]), float(c[3]), float(c[4]), float(c[5]),))
             return candles
-        else: 
+        else:
             return None
 
 
 
 
 
-        
+
+
