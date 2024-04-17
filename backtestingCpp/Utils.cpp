@@ -15,8 +15,12 @@ rearrange_candles(double** candles, string tf, long long from_time, long long to
         tf_ms = stod(minutes) * 60.0 * 1000.0;
     }
     else if (tf.find("h") != string::npos) {
-        string minutes = tf.substr(0, tf.find("h"));
-        tf_ms = stod(minutes) * 60.0 * 60.0 * 1000.0;
+        string hours = tf.substr(0, tf.find("h"));
+        tf_ms = stod(hours) * 60.0 * 60.0 * 1000.0;
+    }
+    else if (tf.find("d") != string::npos) {
+        string days = tf.substr(0, tf.find("d"));
+        tf_ms = stod(days) * 60.0 * 60.0 * 24.0 * 1000.0;
     }
     else {
         printf("Parsing timeframe failed for %s\n", tf.c_str());
