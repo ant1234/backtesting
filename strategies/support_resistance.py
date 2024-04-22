@@ -1,5 +1,6 @@
 import pandas as pd
 import time
+from datetime import datetime, timezone
 import numpy as np
 
 import matplotlib.pyplot as plt
@@ -65,15 +66,24 @@ def backtest(df: pd.DataFrame, min_points: int, min_diff_points: int, rounding_n
                     if broken_in_last < 3:
                         grp["start_time"] = index
 
+                    
+
+
                 if broken_in_last < 3 and (grp["last"] is None or index >= grp["last"] + min_diff_points * candle_length):
                     grp["prices"].append(row[h_l][i])
 
                     if len(grp["prices"]) >= min_points:
                         extreme_price = max(grp["prices"]) if side == "resistances" else min(grp["prices"])
-                        levels[side].append([(grp["start_time"], extreme_price), (index, extreme_price)])
+                        # levels[side].append([(grp["start_time"], extreme_price), (index, extreme_price)])
+
+                        start_dt = datetime.utcfromtimestamp(grp["start_time"].tolist() / 1e9)
+                        end_dt = datetime.utcfromtimestamp(index.tolist() / 1e9)
+                        levels[side].append([(start_dt, extreme_price), (end_dt, extreme_price)])
+
                         resistances_supports[side].append({"price": extreme_price, "broken": False})
 
                     grp["last"] = index
+
 
             else:
                 broken_in_last = 0
@@ -133,6 +143,7 @@ def backtest(df: pd.DataFrame, min_points: int, min_diff_points: int, rounding_n
 
     # mpf.plot(df, type="candle", style="charles", alines=dict(alines=levels["resistances"] + levels["supports"]))
     # plt.show()
+
 
     return pnl, max_drawdown
 
